@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <title>Sistem Absensi Siswa</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        button.delete {
+            background-color: #f44336;
+        }
+        
+        button.delete:hover {
+            background-color: #d32f2f;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        tr:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Sistem Absensi Siswa</h1>
+            <p>SMK PLUS INSAN CEMERLANG</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="form-container">
+            <h2>Form Absensi</h2>
+            <form id="absensiForm">
+                <input type="hidden" id="idSiswa">
+                
+                <div class="form-group">
+                    <label for="nama">Nama Siswa</label>
+                    <input type="text" id="nama" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="kelas">Kelas</label>
+                    <input type="text" id="kelas" required>
+                </div>
+                
+                <div class="form-group">
+                     <label for="nis">NIS</label>
+                     <input type="text" id="NIS" required>
+              </div>
+                
+                <div class="form-group">
+                    <label for="tanggal">Tanggal</label>
+                    <input type="date" id="tanggal" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="keterangan">Keterangan</label>
+                    <select id="keterangan" required>
+                        <option value="">Pilih Keterangan</option>
+                        <option value="Hadir">Hadir</option>
+                        <option value="Tidak Hadir">Tidak Hadir</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Izin">Izin</option>
+                    </select>
+                </div>
+                
+                <button type="submit" id="simpanBtn">Simpan</button>
+                <button type="button" id="resetBtn">Reset</button>
+            </form>
+        </div>
+        
+        <h2>Daftar Absensi</h2>
+        <table id="tabelAbsensi">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Siswa</th>
+                    <th>Kelas</th>
+                    <th>NIS</th>
+                    <th>Tanggal</th>
+                    <th>Keterangan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="dataAbsensi">
+                <!-- Data akan dimasukkan di sini oleh JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; SMK PLUS INSAN CEMERLANG</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data absensi
+        let absensiData = [];
+        let currentId = 1;
+        
+        // Elemen form
+        const absensiForm = document.getElementById('absensiForm');
+        const namaInput = document.getElementById('nama');
+        const kelasInput = document.getElementById('kelas');
+        const nisInput = document.getElementById('NIS');
+        const tanggalInput = document.getElementById('tanggal');
+        const keteranganInput = document.getElementById('keterangan');
+        const idSiswaInput = document.getElementById('idSiswa');
+        const simpanBtn = document.getElementById('simpanBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const dataAbsensi = document.getElementById('dataAbsensi');
+        
+        // Set tanggal default ke hari ini
+        const today = new Date().toISOString().split('T')[0];
+        tanggalInput.value = today;
+        
+        // Event listener untuk form
+        absensiForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = idSiswaInput.value ? parseInt(idSiswaInput.value) : currentId++;
+            const nama = namaInput.value;
+            const kelas = kelasInput.value;
+            const NIS = nisInput.value;
+            const tanggal = tanggalInput.value;
+            const keterangan = keteranganInput.value;
+            
+            const absensi = {
+                id,
+                nama,
+                kelas,
+                NIS,
+                tanggal,
+                keterangan
+            };
+            
+            if (idSiswaInput.value) {
+                // Update data yang sudah ada
+                const index = absensiData.findIndex(item => item.id === id);
+                if (index !== -1) {
+                    absensiData[index] = absensi;
+                }
+            } else {
+                // Tambah data baru
+                absensiData.push(absensi);
+            }
+            
+            renderTable();
+            resetForm();
+        });
+        
+        // Event listener untuk reset
+        resetBtn.addEventListener('click', resetForm);
+        
+        // Fungsi untuk merender tabel
+        function renderTable() {
+            dataAbsensi.innerHTML = '';
+            
+            if (absensiData.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="6" style="text-align: center;">Tidak ada data absensi</td>`;
+                dataAbsensi.appendChild(row);
+                return;
+            }
+            
+            absensiData.forEach((absensi, index) => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${absensi.nama}</td>
+                    <td>${absensi.kelas}</td>
+                    <td>${absensi.NIS}</td>
+                    <td>${formatTanggal(absensi.tanggal)}</td>
+                    <td>${absensi.keterangan}</td>
+                    <td class="action-buttons">
+                        <button onclick="editAbsensi(${absensi.id})">Edit</button>
+                        <button class="delete" onclick="hapusAbsensi(${absensi.id})">Hapus</button>
+                    </td>
+                `;
+                
+                dataAbsensi.appendChild(row);
+            });
+        }
+        
+        // Fungsi untuk mengedit absensi
+        function editAbsensi(id) {
+            const absensi = absensiData.find(item => item.id === id);
+            
+            if (absensi) {
+                idSiswaInput.value = absensi.id;
+                namaInput.value = absensi.nama;
+                kelasInput.value = absensi.kelas;
+                nisInput.value = absensi.Nis;
+                tanggalInput.value = absensi.tanggal;
+                keteranganInput.value = absensi.keterangan;
+                
+                simpanBtn.textContent = 'Update';
+            }
+        }
+        
+        // Fungsi untuk menghapus absensi
+        function hapusAbsensi(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                absensiData = absensiData.filter(item => item.id !== id);
+                renderTable();
+                
+                // Jika yang dihapus adalah data yang sedang diedit, reset form
+                if (idSiswaInput.value && parseInt(idSiswaInput.value) === id) {
+                    resetForm();
+                }
+            }
+        }
+        
+        // Fungsi untuk mereset form
+        function resetForm() {
+            absensiForm.reset();
+            idSiswaInput.value = '';
+            simpanBtn.textContent = 'Simpan';
+            tanggalInput.value = today;
+        }
+        
+        // Fungsi untuk memformat tanggal
+        function formatTanggal(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+        
+        // Render tabel saat pertama kali load
+        renderTable();
+    </script>
+</body>
+</html>
